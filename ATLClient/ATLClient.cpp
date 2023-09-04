@@ -6,9 +6,9 @@ namespace fs = std::filesystem;
 
 const size_t maxConcurrentFunctions = 4; // Maximum files to parallel sorting
 
-void worker(IBinaryFilePtr pBinFile, std::counting_semaphore<>& semaphore) {
+void worker(IBinaryFilePtr pBinFile, std::counting_semaphore<>& semaphore, bool sortType) {
     semaphore.acquire(); // Wait for access to the function
-    pBinFile->SortFile();
+    pBinFile->SortFile(sortType);
     semaphore.release(); // Release access
 }
 
@@ -16,10 +16,14 @@ int main()
 {
     std::wstring toSortDirectoryPath, sortedDirectoryPath;
 
+    bool sortType;
     wprintf(L"Print directory to sort (exapmle \"D:\\Downloads\\Files\\ToSort\": ");
     std::wcin >> toSortDirectoryPath;
     wprintf(L"Print directory to save sorted files: ");
     std::wcin >> sortedDirectoryPath;
+
+    wprintf(L"sorting type (0 - to Lower, 1 - to Greater): ");
+    std::cin >> sortType;
 
     std::unordered_map<std::wstring, std::wstring> filePaths;
 
@@ -63,7 +67,7 @@ int main()
             
             // Create and launch threads
             for (IBinaryFilePtr file : files) {
-                threads.emplace_back(worker, file, std::ref(semaphore));
+                threads.emplace_back(worker, file, std::ref(semaphore), sortType);
             }
 
             for (boost::thread& thread : threads) {

@@ -50,7 +50,7 @@ STDMETHODIMP CBinaryFile::put_sortedFilePath(BSTR newVal)
 }
 
 
-STDMETHODIMP CBinaryFile::SortFile()
+STDMETHODIMP CBinaryFile::SortFile(VARIANT_BOOL sortGreater)
 {
 
     if (sortedFilePath == nullptr || SysStringLen(sortedFilePath) == 0) sortedFilePath = L"sorted.bin";
@@ -93,7 +93,8 @@ STDMETHODIMP CBinaryFile::SortFile()
     size_t numElements = static_cast<size_t>(fileSize) / sizeof(uint32_t);
         
     // Sort the data right in the file
-    std::sort(std::execution::par_unseq, sortedCopyData, sortedCopyData + numElements); // execution::par_unseq for parallel sorting
+    if (sortGreater) std::sort(std::execution::par_unseq, sortedCopyData, sortedCopyData + numElements, std::greater()); // execution::par_unseq for parallel sorting
+    else std::sort(std::execution::par_unseq, sortedCopyData, sortedCopyData + numElements); // execution::par_unseq for parallel sorting
         
     wprintf(L"File sorted successfully. Saved as \"%s\".\n", sortedFilePath);
 

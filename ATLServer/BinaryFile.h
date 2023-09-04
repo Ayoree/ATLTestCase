@@ -72,7 +72,7 @@ public:
 	STDMETHOD(put_targetFilePath)(BSTR newVal);
 	STDMETHOD(get_sortedFilePath)(BSTR* pVal);
 	STDMETHOD(put_sortedFilePath)(BSTR newVal);
-	STDMETHOD(SortFile)();
+	STDMETHOD(SortFile)(VARIANT_BOOL sortGreater);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(BinaryFile), CBinaryFile)

@@ -107,7 +107,8 @@ EXTERN_C const IID IID_IBinaryFile;
         virtual /* [id][propput] */ HRESULT STDMETHODCALLTYPE put_sortedFilePath( 
             /* [in] */ BSTR newVal) = 0;
         
-        virtual /* [id] */ HRESULT STDMETHODCALLTYPE SortFile( void) = 0;
+        virtual /* [id] */ HRESULT STDMETHODCALLTYPE SortFile( 
+            /* [in] */ VARIANT_BOOL sortGreater) = 0;
         
     };
     
@@ -184,7 +185,8 @@ EXTERN_C const IID IID_IBinaryFile;
             /* [in] */ BSTR newVal);
         
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *SortFile )( 
-            IBinaryFile * This);
+            IBinaryFile * This,
+            /* [in] */ VARIANT_BOOL sortGreater);
         
         END_INTERFACE
     } IBinaryFileVtbl;
@@ -234,8 +236,8 @@ EXTERN_C const IID IID_IBinaryFile;
 #define IBinaryFile_put_sortedFilePath(This,newVal)	\
     ( (This)->lpVtbl -> put_sortedFilePath(This,newVal) ) 
 
-#define IBinaryFile_SortFile(This)	\
-    ( (This)->lpVtbl -> SortFile(This) ) 
+#define IBinaryFile_SortFile(This,sortGreater)	\
+    ( (This)->lpVtbl -> SortFile(This,sortGreater) ) 
 
 #endif /* COBJMACROS */
 

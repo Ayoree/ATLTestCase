@@ -20,7 +20,7 @@ interface IBinaryFile : IDispatch
 	[propput, id(1)] HRESULT targetFilePath([in] BSTR newVal);
 	[propget, id(2)] HRESULT sortedFilePath([out, retval] BSTR* pVal);
 	[propput, id(2)] HRESULT sortedFilePath([in] BSTR newVal);
-	[id(3)] HRESULT SortFile();
+	[id(3)] HRESULT SortFile([in] VARIANT_BOOL sortGreater);
 };
 [
 	uuid(ee850f0f-d8c4-4f9c-b773-0a2beaafcde8),
