@@ -1,0 +1,26 @@
+HKCR
+{
+	ATLServer.BinaryFile.1 = s 'BinaryFile class'
+	{
+		CLSID = s '{f2dbbe18-fe54-463e-be3c-d83a18df0096}'
+	}
+	ATLServer.BinaryFile = s 'BinaryFile class'
+	{		
+		CurVer = s 'ATLServer.BinaryFile.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {f2dbbe18-fe54-463e-be3c-d83a18df0096} = s 'BinaryFile class'
+		{
+			ProgID = s 'ATLServer.BinaryFile.1'
+			VersionIndependentProgID = s 'ATLServer.BinaryFile'
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			TypeLib = s '{ee850f0f-d8c4-4f9c-b773-0a2beaafcde8}'
+			Version = s '1.0'
+		}
+	}
+}

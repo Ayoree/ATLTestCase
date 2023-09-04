@@ -1,0 +1,50 @@
+// ATLServer.idl : IDL source for ATLServer
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ATLServer.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(708dc3e8-12ab-4fc3-ba12-b37e77d445af),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IBinaryFile : IDispatch
+{
+	[propget, id(1)] HRESULT targetFilePath([out, retval] BSTR* pVal);
+	[propput, id(1)] HRESULT targetFilePath([in] BSTR newVal);
+	[propget, id(2)] HRESULT sortedFilePath([out, retval] BSTR* pVal);
+	[propput, id(2)] HRESULT sortedFilePath([in] BSTR newVal);
+	[id(3)] HRESULT SortFile();
+};
+[
+	uuid(ee850f0f-d8c4-4f9c-b773-0a2beaafcde8),
+	version(1.0),
+]
+library ATLServerLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(a94808cc-4181-4185-8dec-748734db5f48)
+	]
+	dispinterface _IBinaryFileEvents
+	{
+		properties:
+		methods:
+	};
+	[
+		uuid(f2dbbe18-fe54-463e-be3c-d83a18df0096)
+	]
+	coclass BinaryFile
+	{
+		[default] interface IBinaryFile;
+		[default, source] dispinterface _IBinaryFileEvents;
+	};
+};
+
+import "shobjidl.idl";
