@@ -13,7 +13,6 @@
 #include <execution>
 #include <semaphore>
 #include <filesystem>
-#include <boost/thread.hpp>
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 

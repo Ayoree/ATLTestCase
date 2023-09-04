@@ -5,10 +5,6 @@
 namespace fs = std::filesystem;
 
 const size_t maxConcurrentFunctions = 4; // Maximum files to parallel sorting
-std::vector<boost::thread> threads;
-std::counting_semaphore<> semaphore(maxConcurrentFunctions); // Initialize the counting semaphore
-boost::asio::io_service ioService;
-boost::asio::serial_port serialPort(ioService);
 
 void worker(IBinaryFilePtr pBinFile, std::counting_semaphore<>& semaphore) {
     semaphore.acquire(); // Wait for access to the function
@@ -59,7 +55,10 @@ int main()
             }
                                                                          
             wprintf(L"Sorting files in \"%s\"...\n", toSortDirectoryPath.c_str());
-
+            
+            std::vector<boost::thread> threads;
+            std::counting_semaphore<> semaphore(maxConcurrentFunctions); // Initialize the counting semaphore
+            
             auto startTime = std::chrono::high_resolution_clock::now();
             
             // Create and launch threads
@@ -73,6 +72,7 @@ int main()
             
             auto endTime = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+            
             wprintf(L"Sorting time: %llu ms.\n", duration.count());
         }
         catch (_com_error e)

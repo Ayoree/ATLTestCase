@@ -52,59 +52,50 @@ STDMETHODIMP CBinaryFile::put_sortedFilePath(BSTR newVal)
 
 STDMETHODIMP CBinaryFile::SortFile()
 {
-    try {
-        boost::this_thread::interruption_point();
-        if (sortedFilePath == nullptr || SysStringLen(sortedFilePath) == 0) sortedFilePath = L"sorted.bin";
 
-        wprintf(L"Sorting file \"%s\"...\n", this->targetFilePath);
-        std::ifstream inputFile(targetFilePath, std::ios::binary);
-        if (!inputFile.is_open()) {
-            Error(L"Failed to open input file.");
-            return E_FAIL;
-        }
+    if (sortedFilePath == nullptr || SysStringLen(sortedFilePath) == 0) sortedFilePath = L"sorted.bin";
 
-        std::ofstream copyFile(sortedFilePath, std::ios::binary);
-        if (!copyFile.is_open()) {
-            Error(L"Failed to create output file.");
-            inputFile.close();
-            return E_FAIL;
-        }
+    wprintf(L"Sorting file \"%s\"...\n", this->targetFilePath);
+    std::ifstream inputFile(targetFilePath, std::ios::binary);
+    if (!inputFile.is_open()) {
+        Error(L"Failed to open input file.");
+        return E_FAIL;
+    }
 
-        copyFile << inputFile.rdbuf();  // Copy the content
-
+    std::ofstream copyFile(sortedFilePath, std::ios::binary);
+    if (!copyFile.is_open()) {
+        Error(L"Failed to create output file.");
         inputFile.close();
-        copyFile.close();
-
-        std::fstream sortedCopyFile(sortedFilePath, std::ios::binary | std::ios::in | std::ios::out);
-        if (!sortedCopyFile.is_open()) {
-            Error(L"Failed to open output file.");
-            return E_FAIL;
-        }
-
-        // Determine the size of the sorted copy file
-        sortedCopyFile.seekg(0, std::ios::end);
-        std::streamsize fileSize = sortedCopyFile.tellg();
-        sortedCopyFile.seekg(0, std::ios::beg);
-        sortedCopyFile.close();
-
-        bip::file_mapping mapping(sortedFilePath, bip::read_write);
-        bip::mapped_region region(mapping, bip::read_write);
-
-        uint32_t* sortedCopyData = static_cast<uint32_t*>(region.get_address());
-        size_t numElements = static_cast<size_t>(fileSize) / sizeof(uint32_t);
-        
-        // Sort the data right in the file
-        std::sort(std::execution::par_unseq, sortedCopyData, sortedCopyData + numElements); // execution::par_unseq for parallel sorting
-        
-        wprintf(L"File sorted successfully. Saved as \"%s\".\n", sortedFilePath);
-        if (boost::this_thread::interruption_requested()) {
-            throw boost::thread_interrupted();
-        }
-        return S_OK;
+        return E_FAIL;
     }
-    catch (const boost::thread_interrupted&) {
-        // Обработка прерывания потока
-        wprintf(L"Thread has been interrupted.\n");
-        return S_OK;
+
+    copyFile << inputFile.rdbuf();  // Copy the content
+
+    inputFile.close();
+    copyFile.close();
+
+    std::fstream sortedCopyFile(sortedFilePath, std::ios::binary | std::ios::in | std::ios::out);
+    if (!sortedCopyFile.is_open()) {
+        Error(L"Failed to open output file.");
+        return E_FAIL;
     }
+
+    // Determine the size of the sorted copy file
+    sortedCopyFile.seekg(0, std::ios::end);
+    std::streamsize fileSize = sortedCopyFile.tellg();
+    sortedCopyFile.seekg(0, std::ios::beg);
+    sortedCopyFile.close();
+
+    bip::file_mapping mapping(sortedFilePath, bip::read_write);
+    bip::mapped_region region(mapping, bip::read_write);
+
+    uint32_t* sortedCopyData = static_cast<uint32_t*>(region.get_address());
+    size_t numElements = static_cast<size_t>(fileSize) / sizeof(uint32_t);
+        
+    // Sort the data right in the file
+    std::sort(std::execution::par_unseq, sortedCopyData, sortedCopyData + numElements); // execution::par_unseq for parallel sorting
+        
+    wprintf(L"File sorted successfully. Saved as \"%s\".\n", sortedFilePath);
+
+    return S_OK;
 }

@@ -13,6 +13,5 @@
 #include <filesystem>
 #include <boost/thread.hpp>
 #include <unordered_map>
-#include <boost/asio.hpp>
 
 #endif //PCH_H
